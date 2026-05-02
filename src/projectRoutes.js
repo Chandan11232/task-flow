@@ -30,7 +30,7 @@ router.get('/', auth, (req, res) => {
   res.json(projects);
 });
 
-// Create project (any authenticated user becomes admin of their project)
+// Create project 
 router.post('/', auth, (req, res) => {
   const { name, description } = req.body;
   if (!name || !name.trim()) return res.status(400).json({ error: 'Project name is required' });
