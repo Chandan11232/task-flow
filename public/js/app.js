@@ -1,6 +1,3 @@
-/* ============================================================
-   TaskFlow Frontend — Single Page App
-   ============================================================ */
 
 let currentUser = null;
 let token = localStorage.getItem('tf_token');
@@ -10,9 +7,6 @@ let currentTasks = [];
 let editingTaskId = null;
 let allMyTasks = [];
 
-// ============================================================
-// API HELPER
-// ============================================================
 async function api(method, url, body) {
   const opts = {
     method,
@@ -26,9 +20,6 @@ async function api(method, url, body) {
   return data;
 }
 
-// ============================================================
-// INIT
-// ============================================================
 async function init() {
   if (token) {
     try {
@@ -53,15 +44,12 @@ function showAuth() {
 function showApp() {
   document.getElementById('auth-screen').classList.add('hidden');
   document.getElementById('app-screen').classList.remove('hidden');
-  // Update sidebar user info
   document.getElementById('sidebar-name').textContent = currentUser.name;
   document.getElementById('sidebar-role').textContent = currentUser.role;
   document.getElementById('sidebar-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
 }
 
-// ============================================================
-// AUTH
-// ============================================================
+
 function showTab(tab) {
   document.getElementById('login-form').classList.toggle('hidden', tab !== 'login');
   document.getElementById('signup-form').classList.toggle('hidden', tab !== 'signup');
@@ -114,7 +102,6 @@ async function logout() {
   showAuth();
 }
 
-// Allow Enter key in auth forms
 document.addEventListener('keydown', (e) => {
   if (e.key !== 'Enter') return;
   const active = document.activeElement;
@@ -122,11 +109,8 @@ document.addEventListener('keydown', (e) => {
   else if (active.closest('#signup-form')) signup();
 });
 
-// ============================================================
-// NAVIGATION
-// ============================================================
+
 function navigate(page, id) {
-  // Hide all pages
   document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
@@ -149,9 +133,6 @@ function navigate(page, id) {
   }
 }
 
-// ============================================================
-// DASHBOARD
-// ============================================================
 async function loadDashboard() {
   try {
     const data = await api('GET', '/api/dashboard');
@@ -241,9 +222,6 @@ function renderOverdueTasks(tasks) {
   `).join('');
 }
 
-// ============================================================
-// PROJECTS
-// ============================================================
 async function loadProjects() {
   const grid = document.getElementById('projects-grid');
   grid.innerHTML = `<div class="loading">Loading projects...</div>`;
@@ -333,15 +311,11 @@ function confirmDeleteProject() {
   );
 }
 
-// ============================================================
-// PROJECT DETAIL
-// ============================================================
 async function loadProjectDetail(id) {
   try {
     currentProject = await api('GET', `/api/projects/${id}`);
     document.getElementById('project-detail-name').textContent = currentProject.name;
 
-    // Render project action buttons (for admin)
     const actionsEl = document.getElementById('project-actions');
     if (currentProject.my_role === 'admin') {
       actionsEl.innerHTML = `
@@ -353,7 +327,6 @@ async function loadProjectDetail(id) {
     } else {
       actionsEl.innerHTML = '';
       document.getElementById('add-member-btn').style.display = 'none';
-      // Members can still add tasks
       document.getElementById('add-task-btn').style.display = '';
     }
 
@@ -386,10 +359,6 @@ function renderMembers(members) {
     </div>
   `).join('');
 }
-
-// ============================================================
-// TASKS
-// ============================================================
 async function loadTasks(projectId) {
   const list = document.getElementById('tasks-list');
   list.innerHTML = `<div class="loading">Loading tasks...</div>`;
@@ -547,9 +516,6 @@ function deleteTask(taskId, title) {
   );
 }
 
-// ============================================================
-// MEMBERS
-// ============================================================
 async function addMember() {
   const email = document.getElementById('member-email-input').value.trim();
   const role = document.getElementById('member-role-input').value;
@@ -583,9 +549,6 @@ function removeMember(userId, name) {
   );
 }
 
-// ============================================================
-// MY TASKS PAGE
-// ============================================================
 async function loadMyTasks() {
   const el = document.getElementById('my-tasks-list');
   el.innerHTML = `<div class="loading">Loading tasks...</div>`;
@@ -639,9 +602,7 @@ function renderMyTasksPage(tasks, filter) {
   }).join('');
 }
 
-// ============================================================
-// MODALS
-// ============================================================
+
 function openModal(id) {
   document.getElementById('modal-overlay').classList.remove('hidden');
   document.getElementById(id).classList.remove('hidden');
@@ -649,7 +610,6 @@ function openModal(id) {
 
 function closeModal(id) {
   document.getElementById(id).classList.add('hidden');
-  // If no other modals open, hide overlay
   const anyOpen = [...document.querySelectorAll('.modal')].some(m => !m.classList.contains('hidden'));
   if (!anyOpen) document.getElementById('modal-overlay').classList.add('hidden');
 }
@@ -670,9 +630,6 @@ function openConfirmModal(title, message, callback) {
   openModal('confirm-modal');
 }
 
-// ============================================================
-// UTILITIES
-// ============================================================
 function showError(id, msg) {
   const el = document.getElementById(id);
   el.textContent = msg;
@@ -721,7 +678,5 @@ function emptyState(msg, icon) {
   return `<div class="empty-state">${icon ? `<span class="empty-state-icon">${icon}</span>` : ''}<p>${msg}</p></div>`;
 }
 
-// ============================================================
-// START
-// ============================================================
+
 init();
