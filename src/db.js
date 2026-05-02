@@ -38,7 +38,6 @@ function getLastId() {
   return r[0]?.values[0]?.[0] ?? null;
 }
 
-// Mimic synchronous prepare().run() / .get() / .all() API
 const db = {
   prepare(sql) {
     return {
@@ -75,7 +74,7 @@ const db = {
     _sqlDb.run(sql);
     persist();
   },
-  pragma() {} // no-op
+  pragma() {} 
 };
 
 async function initDb() {
